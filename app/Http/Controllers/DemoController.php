@@ -8,7 +8,7 @@ class DemoController extends Controller
 {
     public function index()
     {
-        $data = '';
+        $data = ['hello'];
 
         return view('index', $data);
     }
