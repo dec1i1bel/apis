@@ -8,7 +8,7 @@ class DemoController extends Controller
 {
     public function index()
     {
-        $data = $this->GetDataFromE3rdPartyApi();
+        $data = $this->GetDataFrom3rdPartyApi();
 
         return view('index', [
             'data' => $data['body']
@@ -20,7 +20,7 @@ class DemoController extends Controller
      * - Q60 - New-York id from Wikidata
      * - languageCode=ru - [optional] language of the data received. Default - en
      */
-    private function GetDataFromE3rdPartyApi()
+    private function GetDataFrom3rdPartyApi()
     {
         $client = new Client;
 
