@@ -1,6 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DemoController;
+use App\Http\Controllers\WikidataCitiesController;
 
-Route::get('/', [DemoController::class, 'index'])->name('index');
+Route::get('/', [WikidataCitiesController::class, 'index'])->name('index');
