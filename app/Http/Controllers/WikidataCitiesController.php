@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use \GuzzleHttp\Client;
 use \App\Lib\GeoDBCitiesApiManager;
-use \Illuminate\HttpRequest;
+use \Illuminate\Http\Request;
 use \App\Models\WikidataCities;
 
 class WikidataCitiesController extends Controller
 {
-    public function index()
+    public function getCities()
     {
         $res = WikidataCities::all();
 
