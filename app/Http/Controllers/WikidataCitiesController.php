@@ -5,25 +5,18 @@ namespace App\Http\Controllers;
 use \App\Lib\GeoDBCitiesApiManager;
 use \Illuminate\Http\Request;
 use \App\Models\WikidataCities;
+use App\Lib\GeoDBCitiesApiManager as GeoDB;
 
 class WikidataCitiesController extends Controller
 {
     public function getCities()
     {
-        $res = WikidataCities::all();
+        $api = new GeoDB('https://wft-geo-db.p.rapidapi.com/v1/geo/cities?minPopulation=10000000');
+
+        $data = $api->getData();
 
         return view('index', [
-            'data' => $res
-        ]);
-    }
-
-    public function getCityDetails(Request $request)
-    {
-        $apiManager = new GeoDBCitiesApiManager($request['wikidataCityId']);
-        $data = $apiManager->receiveData();
-
-        return view('index', [
-            'data' => $data['body']
+            'data' => $data
         ]);
     }
 }

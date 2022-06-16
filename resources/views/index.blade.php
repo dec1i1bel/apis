@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Главная || LBoard')
+@section('title', 'Главная || APIs')
 
 @section('header')
     @parent
