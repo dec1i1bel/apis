@@ -9,6 +9,8 @@ class WikidataCities extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'wikidata_id',
         'city_name_en',

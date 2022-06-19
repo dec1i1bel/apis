@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\WikidataCities;
 use App\Lib\GeoDBCitiesApiManager as GeoDB;
 use App\Models\WikidataCities;
 
@@ -48,12 +47,15 @@ class GetGeoDBcities extends Command
             $data = $get;
         } else {
             $data = json_decode($get)->data;
-    
+            $wcities = WikidataCities::all();
+
             foreach ($data as $item) {
-                $wikiDataId = $item->wikiDataId;
-                $city = $item->city;
-                // ... getting other fields from result ...
-                // save fields to database
+                if (!$wcities->contains($wcities->where('wikidata_id'), $item->wikiDataId)) {
+                    WikidataCities::create([
+                        'wikidata_id' => $item->wikiDataId,
+                        'city_name_en' => $item->city
+                    ]);
+                }
             }
         }
 
