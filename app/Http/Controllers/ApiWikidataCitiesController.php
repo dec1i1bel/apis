@@ -8,6 +8,11 @@ class ApiWikidataCitiesController extends Controller
 {
     public function getCities()
     {
-        return WikidataCities::all()->toJson(JSON_UNESCAPED_UNICODE);
+        $json = WikidataCities::all()->toJson(JSON_UNESCAPED_UNICODE);
+        $fp = fopen('results.json', 'w');
+        fwrite($fp, $json);
+        fclose($fp);
+
+        return $json;
     }
 }
