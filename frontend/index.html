@@ -12,13 +12,18 @@
 <body>
     <div class="container">
         <div id="select_cities">
-            <select v-if="cities.length > 0">
+            <select>
                 <option selected>Please select city</option>
                 <option 
                     v-for="city in cities" 
                     v-bind:value="city.id"
+                    v-on:click="retrieveCityData"
                 >{{ city.name }}</option>
             </select>
+        </div>
+        <div id="select_props">
+            <h3>Chosse data:</h3>
+            <input type="checkbox" name="check_weather" id="check_weather" value="weather">&nbsp;погода<br>
         </div>
     </div>
     <script src="script.js"></script>
