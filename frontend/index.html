@@ -22,9 +22,21 @@
             </select>
         </div>
         <div id="select_props">
-            <h3>Chosse data:</h3>
-            <input type="checkbox" name="check_weather" id="check_weather" value="weather">&nbsp;погода<br>
+            <h3>Available data:</h3>
+            <input
+                type="checkbox" 
+                name="check_weather" 
+                id="check_weather" 
+                value="weather"
+            >&nbsp;Weather<br>
         </div>
+        <h3>Result</h3>
+        <!-- <ul>
+            <li
+                v-for="res in result"
+                v-bind:value="res.id"
+            >{{ res.name }}</li>
+        </ul> -->
     </div>
     <script src="script.js"></script>
 </body>

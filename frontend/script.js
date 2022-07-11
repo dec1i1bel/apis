@@ -9,16 +9,9 @@ let selectCities = new Vue({
     },
     methods: {
         getCities: function () {
-            const url = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities?minPopulation=20000000'
+            const url = 'https://data-boom.ru/api/cities';
 
-            const headers = {
-                'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
-                'X-RapidAPI-Key': '371ef07306msh4c6de730e39801dp1616ccjsn600fb9f97d16'
-            }
-
-            fetch(url, {
-                headers: headers
-            }).then((response) => {
+            fetch(url).then((response) => {
                 return response.json()
             })
             .then((data) => {
@@ -28,37 +21,41 @@ let selectCities = new Vue({
                 console.log(error)
             })
         },
-        parseCities: function (data) {
-            const cities = data.data
-
-            for (const i in cities) {
-                const city = cities[i]
-                this.cities.push({id: city.wikiDataId, name: city.name})
-            }
+        parseCities: function (cities) {
+            cities.forEach(city => {
+                this.cities.push({id: city.city_name_en, name: city.city_name_en})
+            });
         },
-        parceWeather: function (data) {
-
+        parseWeather: function (data) {
+            console.log(data)
         },
         retrieveCityData: function (e) {
-            cityId = e.target.value
+            cityName = e.target.value
+            console.log('cityName');
+            console.log(cityName);
 
-            const url = 'https://weatherapi-com.p.rapidapi.com/current.json'
+            const url = 'https://weather338.p.rapidapi.com/locations/search?query=Los%20Angeles&language=en-US'
+            
+            // запасное API
+            // const url = 'https://weatherapi-com.p.rapidapi.com/current.json?q=Los%20Angeles'
 
             const headers = {
-                'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
-                'X-RapidAPI-Key': '371ef07306msh4c6de730e39801dp1616ccjsn600fb9f97d16'
+                'X-RapidAPI-Key': '371ef07306msh4c6de730e39801dp1616ccjsn600fb9f97d16',
+                'X-RapidAPI-Host': 'weather338.p.rapidapi.com',
+                // 'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
             }
 
             fetch(url, {
-                headers: headers
+                method: 'GET',
+                headers: headers,
             }).then((response) => {
                 return response.json()
             })
             .then((data) => {
                 this.parseWeather(data)
             })
-            .catch((error) => {
-                console.log(error)
+            .catch((err) => {
+                console.error(err)
             })
         },
     }
