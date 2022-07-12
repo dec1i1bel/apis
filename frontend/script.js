@@ -32,32 +32,39 @@ let selectCities = new Vue({
         },
         parseWeather: function (weather) {
             const current = weather.current
+
+            let period = new Map();
+            period.set(0, 'ночь');
+            period.set(1, 'день');
+
+            let windDir = new Map();
+            windDir.set('S', 'южный');
+            windDir.set('SW', 'юго-западный');
+            windDir.set('SE', 'юго-восточный');
+            windDir.set('N', 'северный');
+            windDir.set('NW', 'северо-западный');
+            windDir.set('NE', 'северо-восточный');
+
             this.cityWeather = [{
                 city: weather.location.name,
                 icon: current.condition.icon,
                 temp_c: current.temp_c,
                 gust_kph: 15.5, // порывы ветра
                 humidity: current.humidity, // влажность
-                is_day: current.is_day,
-                wind_dir: current.wind_dir,
+                is_day: period.get(current.is_day),
+                wind_dir: windDir.get(current.wind_dir),
                 wind_kph: current.wind_kph,
                 cloud: current.cloud,
                 last_updated: current.last_updated,
-            }]
-            console.log(weather)
+            }];
+            console.log(weather);
         },
         retrieveCityData: function (e) {
-            cityName = e.target.value
-            console.log('cityName');
-            console.log(cityName);
-
-            // const url = 'https://weather338.p.rapidapi.com/locations/search?query=Los%20Angeles&language=en-US'
-            
-            const url = 'https://weatherapi-com.p.rapidapi.com/current.json?q=Los%20Angeles'
+            const cityName = e.target.value.replace(' ', '%20');
+            const url = 'https://weatherapi-com.p.rapidapi.com/current.json?q=' + cityName
 
             const headers = {
                 'X-RapidAPI-Key': '371ef07306msh4c6de730e39801dp1616ccjsn600fb9f97d16',
-                // 'X-RapidAPI-Host': 'weather338.p.rapidapi.com',
                 'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
             }
 
