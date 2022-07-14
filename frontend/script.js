@@ -2,7 +2,7 @@ let selectCities = new Vue({
     el: '#select_cities',
     data: {
         urlReceive: 'https://data-boom.ru/api',
-        urlSend: 'http://b-apis/api',
+        urlSend: 'https://data-boom.ru/api',
         cities: [],
         cityWeather: [],
         gotWeather: false,
