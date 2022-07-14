@@ -1,36 +1,38 @@
 let selectCities = new Vue({
     el: '#select_cities',
     data: {
+        urlReceive: 'https://data-boom.ru/api',
+        urlSend: 'http://b-apis/api',
         cities: [],
         cityWeather: [],
         gotWeather: false,
     },
-    mounted: function () {
+    mounted: function() {
         this.getCities();
     },
     methods: {
-        getCities: function () {
-            const url = 'https://data-boom.ru/api/cities';
+        getCities: function() {
+            const url = this.urlReceive + '/cities';
 
             fetch(url).then((response) => {
-                return response.json()
-            })
-            .then((data) => {
-                this.parseCities(data)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+                    return response.json()
+                })
+                .then((data) => {
+                    this.parseCities(data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         },
-        parseCities: function (cities) {
+        parseCities: function(cities) {
             cities.forEach(city => {
                 this.cities.push({
-                    id: city.city_name_en, 
+                    id: city.city_name_en,
                     name: city.city_name_en
                 })
             });
         },
-        parseWeather: function (weather) {
+        parseWeather: function(weather) {
             const current = weather.current
 
             let period = new Map();
@@ -59,7 +61,7 @@ let selectCities = new Vue({
             }];
             console.log(weather);
         },
-        retrieveCityData: function (e) {
+        retrieveCityData: function(e) {
             const cityName = e.target.value.replace(' ', '%20');
             const url = 'https://weatherapi-com.p.rapidapi.com/current.json?q=' + cityName
 
@@ -69,17 +71,29 @@ let selectCities = new Vue({
             }
 
             fetch(url, {
-                method: 'GET',
-                headers: headers,
-            }).then((response) => {
-                return response.json()
-            })
-            .then((data) => {
-                this.parseWeather(data)
-            })
-            .catch((err) => {
-                console.error(err)
-            })
+                    method: 'GET',
+                    headers: headers,
+                }).then((response) => {
+                    return response.json()
+                })
+                .then((data) => {
+                    this.parseWeather(data)
+                })
+                .catch((err) => {
+                    console.error(err)
+                })
         },
+        generateResultJson: function(e) {
+            let xhr = new XMLHttpRequest();
+            let url = this.urlSend + '/result/';
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(this.responseText);
+                }
+            };
+            xhr.send('blabla');
+        }
     }
 })

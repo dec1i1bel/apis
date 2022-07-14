@@ -16,4 +16,16 @@ class ApiWikidataCitiesController extends Controller
 
         return $json;
     }
+
+    public function generateResult()
+    {
+        header('Content-type: application/json');
+        $data = file_get_contents('php://input');
+
+        $fp = fopen('../storage/app/public/jsons/front_result.json', 'w');
+        fwrite($fp, $data);
+        fclose($fp);
+
+        echo 'data received';
+    }
 }

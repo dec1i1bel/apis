@@ -47,7 +47,7 @@ class GetGeoDBcities extends Command
             $data = $get;
         } else {
             $data = json_decode($get)->data;
-            $wcities = WikidataCities::all();
+            $wcities = WikidataCities::all()->get();
 
             foreach ($data as $item) {
                 if (!$wcities->contains($wcities->where('wikidata_id'), $item->wikiDataId)) {

@@ -23,9 +23,7 @@
             </select>
             <div v-if="cityWeather.length > 0">
                 <div v-for="prop in cityWeather">
-                    <!-- <img v-bind:src="'https:' + prop.icon"> -->
-
-                    <div class="card mb-3">
+                    <div class="card mt-3">
                         <div class="row g-0">
                             <div class="col-md-4 position-relative">
                                 <img 
@@ -51,8 +49,13 @@
                         </div>
                     </div>
                 </div>
+                <button
+                    type="button" 
+                    class="btn btn-primary mt-3" 
+                    v-on:click="generateResultJson"
+                >Сгенерировать json</button>
             </div>
-        </div>
+            </div>
     </div>
     <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
