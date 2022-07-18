@@ -1,8 +1,7 @@
 let selectCities = new Vue({
     el: '#select_cities',
     data: {
-        urlReceive: 'https://data-boom.ru/api',
-        urlSend: 'https://data-boom.ru/api',
+        urlReceive: 'http://b-apis/api',
         cities: [],
         cityWeather: [],
         gotWeather: false,
@@ -18,6 +17,8 @@ let selectCities = new Vue({
                     return response.json()
                 })
                 .then((data) => {
+                    console.log('cities:');
+                    console.log(data);
                     this.parseCities(data)
                 })
                 .catch((error) => {
@@ -59,6 +60,7 @@ let selectCities = new Vue({
                 cloud: current.cloud,
                 last_updated: current.last_updated,
             }];
+            console.log('weather:');
             console.log(weather);
         },
         retrieveCityData: function(e) {
@@ -88,6 +90,11 @@ let selectCities = new Vue({
             let url = this.urlSend + '/result/';
             xhr.open('POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
+            // xhr.setRequestHeader('Origin', 'http://f-apis/');
+            // xhr.setRequestHeader('Content-Length', '0');
+            // xhr.setRequestHeader('Accept', '/');
+            // xhr.setRequestHeader('Accept-Encoding', 'gzip, deflate, br');
+            // xhr.setRequestHeader('Connection', 'keep-alive');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     console.log(this.responseText);
