@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Lib\GeoDBCitiesApiManager as GeoDB;
 use App\Models\WikidataCities;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class GetGeoDBcities extends Command
 {
@@ -47,14 +49,51 @@ class GetGeoDBcities extends Command
             $data = $get;
         } else {
             $data = json_decode($get)->data;
-            $wcities = WikidataCities::all()->get();
 
-            foreach ($data as $item) {
-                if (!$wcities->contains($wcities->where('wikidata_id'), $item->wikiDataId)) {
-                    WikidataCities::create([
-                        'wikidata_id' => $item->wikiDataId,
-                        'city_name_en' => $item->city
-                    ]);
+            if (!empty($data)) {
+                foreach ($data as $item) {
+                    $dataCities[$item->wikiDataId] = $item->name;
+                }
+
+                if (isset($dataCities)) {
+                    $dataCities = collect($dataCities)->toArray();
+    
+                    $databaseCities = DB::table('wikidata_cities')->select('wikidata_id', 'city_name_en')->get();
+                    foreach ($databaseCities as $city) {
+                        $dbCities[$city->wikidata_id] = $city->city_name_en;
+                    }
+
+                    if (isset($dbCities)) {
+                        /**
+                         * теперь имеем массивы городов из БД и из API.
+                         * сравниваем их и в БД вписываем недостающие
+                         */
+                        $diffCities = array_diff(
+                            array_keys($dataCities),
+                            array_keys($dbCities)
+                        );
+                        foreach ($diffCities as $dCityWikiId) {
+
+                            if (isset($dataCities[$dCityWikiId])) {
+                                $city = $dataCities[$dCityWikiId];
+                            } elseif (isset($dbCities[dCityWikiId])) {
+                                $city = $dataCities[$dCityWikiId];
+                            }
+                            if (isset($city)) {
+                                $citiesToWrite[$dCityWikiId] = $city;
+                            }
+                        }
+
+                        if (isset($citiesToWrite)) {
+                            foreach ($citiesToWrite as $wikiId => $cityName) {
+                                WikidataCities::create([
+                                    'wikidata_id' => $wikiId,
+                                    'city_name_en' => $cityName
+                                ]);
+                            }
+                        }
+
+                    }
                 }
             }
         }
