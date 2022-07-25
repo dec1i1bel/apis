@@ -4,20 +4,25 @@ namespace App\Lib;
 
 use \GuzzleHttp\Client;
 
-class GeoDBCitiesApiManager
+class ExternalAPIManager
 {
     private $url;
     private $headers;
 
     public function __construct($url)
     {
+        $apiHost = explode('//', $url);
+        $apiHost = array_pop($apiHost);
         $this->url = $url;
         $this->headers = [
-            'X-RapidAPI-Host' => 'wft-geo-db.p.rapidapi.com',
-            'X-RapidAPI-Key' => '371ef07306msh4c6de730e39801dp1616ccjsn600fb9f97d16'
+            'X-RapidAPI-Host' => $apiHost,
+            'X-RapidAPI-Key' => env('RAPIDAPI_KEY'),
         ];
     }
     
+    /**
+     * @return array
+     */
     public function getData()
     {
         $client = new Client;

@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Lib\GeoDBCitiesApiManager as GeoDB;
+use App\Lib\ExternalAPIManager;
+use App\Lib\Helpers;
 use App\Models\WikidataCities;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
 
 class GetGeoDBcities extends Command
 {
@@ -15,7 +15,7 @@ class GetGeoDBcities extends Command
      *
      * @var string
      */
-    protected $signature = 'geodb:cities';
+    protected $signature = 'cities:basic';
 
     /**
      * The console command description.
@@ -35,13 +35,11 @@ class GetGeoDBcities extends Command
     }
 
     /**
-     * Execute the console command.
-     *
      * @return int
      */
     public function handle()
     {
-        $api = new GeoDB('https://wft-geo-db.p.rapidapi.com/v1/geo/cities?minPopulation=10000000');
+        $api = new ExternalAPIManager('https://wft-geo-db.p.rapidapi.com/v1/geo/cities?minPopulation=10000000');
 
         $get = $api->getData();
 
@@ -58,15 +56,12 @@ class GetGeoDBcities extends Command
                 if (isset($dataCities)) {
                     $dataCities = collect($dataCities)->toArray();
     
-                    $databaseCities = DB::table('wikidata_cities')->select('wikidata_id', 'city_name_en')->get();
-                    foreach ($databaseCities as $city) {
-                        $dbCities[$city->wikidata_id] = $city->city_name_en;
-                    }
+                    $dbCities = Helpers::getDatabaseCities();
 
-                    if (isset($dbCities)) {
+                    if (!empty($dbCities)) {
                         /**
-                         * теперь имеем массивы городов из БД и из API.
-                         * сравниваем их и в БД вписываем недостающие
+                         * Сompare arrays of cities from API and DB,
+                         * and put missing cities to DB.
                          */
                         $diffCities = array_diff(
                             array_keys($dataCities),

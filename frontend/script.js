@@ -52,7 +52,6 @@ let selectCities = new Vue({
                 city: weather.location.name,
                 icon: current.condition.icon,
                 temp_c: current.temp_c,
-                gust_kph: 15.5, // порывы ветра
                 humidity: current.humidity, // влажность
                 is_day: period.get(current.is_day),
                 wind_dir: windDir.get(current.wind_dir),
@@ -90,11 +89,6 @@ let selectCities = new Vue({
             let url = this.urlSend + '/result/';
             xhr.open('POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
-            // xhr.setRequestHeader('Origin', 'http://f-apis/');
-            // xhr.setRequestHeader('Content-Length', '0');
-            // xhr.setRequestHeader('Accept', '/');
-            // xhr.setRequestHeader('Accept-Encoding', 'gzip, deflate, br');
-            // xhr.setRequestHeader('Connection', 'keep-alive');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     console.log(this.responseText);
