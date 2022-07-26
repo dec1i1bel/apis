@@ -4,7 +4,7 @@ let selectCities = new Vue({
         urlReceive: 'http://b-apis/api',
         cities: [],
         cityWeather: [],
-        gotWeather: false,
+        cityId: 0,
     },
     mounted: function() {
         this.getCities();
@@ -28,8 +28,8 @@ let selectCities = new Vue({
         parseCities: function(cities) {
             cities.forEach(city => {
                 this.cities.push({
-                    id: city.city_name_en,
-                    name: city.city_name_en
+                    name: city.city_name_en,
+                    city_id: city.id
                 })
             });
         },
@@ -50,33 +50,24 @@ let selectCities = new Vue({
             windDir.set('NE', 'северо-восточный');
 
             this.cityWeather = [{
-                city: 'test city',
+                city: current.city_name_en,
                 icon: current.icon_file,
                 temp_c: current.temp_c,
-                humidity: current.humidity_p, // влажность
+                humidity: current.humidity_p,
                 is_day: period.get(current.is_day),
                 wind_dir: windDir.get(current.wind_dir),
                 wind_kph: current.wind_kph,
                 cloud: current.cloud_p,
                 last_updated: current.updated_at,
             }];
-            console.log('weather:');
-            console.log(weather);
         },
-        retrieveCityData: function(e) {
-            // const cityName = e.target.value.replace(' ', '%20');
-            // const url = 'https://weatherapi-com.p.rapidapi.com/current.json?q=' + cityName
+        getCityData: function(e) {
+            this.cityId = e.target.attributes.city_id.value;
 
-            // const headers = {
-            //     'X-RapidAPI-Key': '371ef07306msh4c6de730e39801dp1616ccjsn600fb9f97d16',
-            //     'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
-            // }
-
-            const url = 'http://b-apis/api/city/16/weather';
+            const url = 'http://b-apis/api/city/' + this.cityId + '/weather';
 
             fetch(url, {
                     method: 'GET',
-                    // headers: headers,
                 }).then((response) => {
                     return response.json()
                 })
@@ -86,10 +77,10 @@ let selectCities = new Vue({
                 .catch((err) => {
                     console.error(err)
                 })
-        },
-        generateResultJson: function(e) {
+        }/*,
+        sendCityIdToApi: function(e) {
             let xhr = new XMLHttpRequest();
-            let url = this.urlSend + '/json/';
+            let url = this.urlSend + this.cityId;
             xhr.open('POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function() {
@@ -98,6 +89,6 @@ let selectCities = new Vue({
                 }
             };
             xhr.send('blabla');
-        }
+        }*/
     }
 })

@@ -25,7 +25,6 @@ class ApiWikidataCitiesController extends Controller
         $this->cityId = $cityId;
         $city = WikidataCities::find($this->cityId)->city_name_en;
         $cityWeather = DB::table('city_current_weather')
-                // ->where('wikidata_city_id', '=', $this->cityId)
                 ->join('wikidata_cities', function($join) {
                     $join->on('city_current_weather.wikidata_city_id', '=', 'wikidata_cities.id')
                         ->where('city_current_weather.wikidata_city_id', '=', $this->cityId);
@@ -53,7 +52,7 @@ class ApiWikidataCitiesController extends Controller
         $data = file_get_contents('php://input');
 
         $now = new \DateTime();
-        $now->format('Y-m-d H:i:s');    // MySQL datetime format
+        $now->format('Y-m-d H:i:s');
         $jsuffix = $now->getTimestamp();
 
         $file = 'json/result_'.$jsuffix.'.json';
