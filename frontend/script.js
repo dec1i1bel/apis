@@ -86,7 +86,7 @@ let selectCities = new Vue({
         },
         generateResultJson: function(e) {
             let xhr = new XMLHttpRequest();
-            let url = this.urlSend + '/result/';
+            let url = this.urlSend + '/json/';
             xhr.open('POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function() {

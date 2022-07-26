@@ -4,20 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\WikidataCities;
 use Illuminate\Support\Facades\Storage;
+use App\Models\CityCurrentWeather;
 
 class ApiWikidataCitiesController extends Controller
 {
     public function getCities()
     {
-        $json = WikidataCities::all()->toJson(JSON_UNESCAPED_UNICODE);
-        $fp = fopen('../storage/app/public/json/cities.json', 'w');
-        fwrite($fp, $json);
-        fclose($fp);
-
-        return $json;
+        return WikidataCities::all()->toJson(JSON_UNESCAPED_UNICODE);
     }
 
-    public function generateResult()
+    /**
+     * @param int $cityId
+     * @return string
+     */
+    public function getCityWeather(int $cityId)
+    {
+        return CityCurrentWeather::where('wikidata_city_id', '=', $cityId)
+                ->get()
+                ->toJson(JSON_UNESCAPED_UNICODE);
+    }
+
+    public function createJsonFile()
     {
         header('Content-type: application/json');
         $data = file_get_contents('php://input');
