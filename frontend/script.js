@@ -34,7 +34,7 @@ let selectCities = new Vue({
             });
         },
         parseWeather: function(weather) {
-            const current = weather.current
+            const current = weather;
 
             let period = new Map();
             period.set(0, 'ночь');
@@ -44,36 +44,39 @@ let selectCities = new Vue({
             windDir.set('S', 'южный');
             windDir.set('SW', 'юго-западный');
             windDir.set('SE', 'юго-восточный');
+            windDir.set('ESE', 'восточно-юго-восточный');
             windDir.set('N', 'северный');
             windDir.set('NW', 'северо-западный');
             windDir.set('NE', 'северо-восточный');
 
             this.cityWeather = [{
-                city: weather.location.name,
-                icon: current.condition.icon,
+                city: 'test city',
+                icon: current.icon_file,
                 temp_c: current.temp_c,
-                humidity: current.humidity, // влажность
+                humidity: current.humidity_p, // влажность
                 is_day: period.get(current.is_day),
                 wind_dir: windDir.get(current.wind_dir),
                 wind_kph: current.wind_kph,
-                cloud: current.cloud,
-                last_updated: current.last_updated,
+                cloud: current.cloud_p,
+                last_updated: current.updated_at,
             }];
             console.log('weather:');
             console.log(weather);
         },
         retrieveCityData: function(e) {
-            const cityName = e.target.value.replace(' ', '%20');
-            const url = 'https://weatherapi-com.p.rapidapi.com/current.json?q=' + cityName
+            // const cityName = e.target.value.replace(' ', '%20');
+            // const url = 'https://weatherapi-com.p.rapidapi.com/current.json?q=' + cityName
 
-            const headers = {
-                'X-RapidAPI-Key': '371ef07306msh4c6de730e39801dp1616ccjsn600fb9f97d16',
-                'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
-            }
+            // const headers = {
+            //     'X-RapidAPI-Key': '371ef07306msh4c6de730e39801dp1616ccjsn600fb9f97d16',
+            //     'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
+            // }
+
+            const url = 'http://b-apis/api/city/16/weather';
 
             fetch(url, {
                     method: 'GET',
-                    headers: headers,
+                    // headers: headers,
                 }).then((response) => {
                     return response.json()
                 })
