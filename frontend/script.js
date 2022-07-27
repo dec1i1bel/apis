@@ -17,12 +17,27 @@ let selectCities = new Vue({
                     return response.json()
                 })
                 .then((data) => {
-                    console.log('cities:');
-                    console.log(data);
                     this.parseCities(data)
                 })
                 .catch((error) => {
                     console.log(error)
+                })
+        },
+        getCityData: function(e) {
+            this.cityId = e.target.attributes.city_id.value;
+
+            const url = 'http://b-apis/api/city/' + this.cityId + '/weather';
+
+            fetch(url, {
+                    method: 'GET',
+                }).then((response) => {
+                    return response.json()
+                })
+                .then((data) => {
+                    this.parseWeather(data)
+                })
+                .catch((err) => {
+                    console.error(err)
                 })
         },
         parseCities: function(cities) {
@@ -60,35 +75,23 @@ let selectCities = new Vue({
                 cloud: current.cloud_p,
                 last_updated: current.updated_at,
             }];
-        },
-        getCityData: function(e) {
-            this.cityId = e.target.attributes.city_id.value;
 
-            const url = 'http://b-apis/api/city/' + this.cityId + '/weather';
+            this.sendCityIdToCreateJson();
+        },
+        sendCityIdToCreateJson: function() {
+            const url = 'http://b-apis/api/city/' + this.cityId + '/json';
 
             fetch(url, {
                     method: 'GET',
                 }).then((response) => {
-                    return response.json()
+                    return response.json();
                 })
                 .then((data) => {
-                    this.parseWeather(data)
+                    console.log(data);
                 })
                 .catch((err) => {
-                    console.error(err)
+                    console.error(err);
                 })
-        }/*,
-        sendCityIdToApi: function(e) {
-            let xhr = new XMLHttpRequest();
-            let url = this.urlSend + this.cityId;
-            xhr.open('POST', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log(this.responseText);
-                }
-            };
-            xhr.send('blabla');
-        }*/
+        }
     }
 })

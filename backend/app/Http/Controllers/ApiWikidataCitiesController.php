@@ -46,21 +46,31 @@ class ApiWikidataCitiesController extends Controller
         return $cityWeather;
     }
 
-    public function createJsonFile()
+    public function createJsonFile(int $cityId)
     {
-        header('Content-type: application/json');
-        $data = file_get_contents('php://input');
+        $this->cityId = $cityId;
+
+        $data = $this->getDataForJson();
 
         $now = new \DateTime();
         $now->format('Y-m-d H:i:s');
         $jsuffix = $now->getTimestamp();
-
+        
         $file = 'json/result_'.$jsuffix.'.json';
 
         $fp = fopen('../public/storage/'.$file, 'a');
         fwrite($fp, $data);
         fclose($fp);
 
-        echo '/storage/'.$file;
+        $json = json_encode(['link' => '/storage/'.$file]);
+
+        return $json;
+    }
+
+    private function getDataForJson()
+    {
+        return CityCurrentWeather::where('wikidata_city_id', '=', $this->cityId)
+                                ->get()
+                                ->toJson(JSON_UNESCAPED_UNICODE);
     }
 }
