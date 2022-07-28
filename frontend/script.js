@@ -53,17 +53,17 @@ let selectCities = new Vue({
             const current = weather;
 
             let period = new Map();
-            period.set(0, 'ночь');
-            period.set(1, 'день');
+            period.set(0, 'night');
+            period.set(1, 'day');
 
             let windDir = new Map();
-            windDir.set('S', 'южный');
-            windDir.set('SW', 'юго-западный');
-            windDir.set('SE', 'юго-восточный');
-            windDir.set('ESE', 'восточно-юго-восточный');
-            windDir.set('N', 'северный');
-            windDir.set('NW', 'северо-западный');
-            windDir.set('NE', 'северо-восточный');
+            windDir.set('S', 'south');
+            windDir.set('SW', 'south-west');
+            windDir.set('SE', 'south-east');
+            windDir.set('ESE', 'east-south-east');
+            windDir.set('N', 'north');
+            windDir.set('NW', 'north-west');
+            windDir.set('NE', 'north-east');
 
             this.cityWeather = [{
                 city: current.city_name_en,
@@ -76,8 +76,6 @@ let selectCities = new Vue({
                 cloud: current.cloud_p,
                 last_updated: current.updated_at,
             }];
-
-            // this.sendCityIdToCreateJson();
         },
         sendCityIdToCreateJson: function() {
             const url = 'http://b-apis/api/city/' + this.cityId + '/json';
@@ -88,9 +86,7 @@ let selectCities = new Vue({
                     return response.json();
                 })
                 .then((data) => {
-                    const link = 'http://b-apis' + data.link;
-                    console.log(link);
-                    this.jsonLink = link;
+                    this.jsonLink = 'http://b-apis' + data.link;
                 })
                 .catch((err) => {
                     console.error(err);

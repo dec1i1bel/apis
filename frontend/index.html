@@ -14,7 +14,7 @@
     <div class="container w-50 mt-4">
         <div id="select_cities">
             <select class="form-select">
-                <option selected>Выберите город</option>
+                <option selected>Choose city</option>
                 <option 
                     v-for="city in cities" 
                     v-bind:value="city.name"
@@ -37,14 +37,14 @@
                                     <h5 class="card-title">{{ prop.city }}</h5>
                                     <p class="card-text">
                                         <ul style="margin-left: -30px;">
-                                            <li>время суток: {{ prop.is_day }}</li>
-                                            <li>температура воздуха: {{ prop.temp_c }} C</li>
-                                            <li>ветер {{ prop.wind_dir }}, {{ prop.wind_kph }} км/ч</li>
-                                            <li>влажность: {{ prop.humidity }}%</li>
-                                            <li>облачность: {{ prop.cloud }}%</li>
+                                            <li>time of day: {{ prop.is_day }}</li>
+                                            <li>temperature: {{ prop.temp_c }} C</li>
+                                            <li>wind: {{ prop.wind_dir }}, {{ prop.wind_kph }} km/h<li>
+                                            <li>humidity: {{ prop.humidity }}%</li>
+                                            <li>cloud: {{ prop.cloud }}%</li>
                                         </ul>
                                     </p>
-                                    <p class="card-text"><small class="text-muted">обновлено {{ prop.last_updated }}</small></p>
+                                    <p class="card-text"><small class="text-muted">Last updated {{ prop.last_updated }}</small></p>
                                 </div>
                             </div>
                         </div>
@@ -53,13 +53,13 @@
                 <button 
                     class="btn btn-outline-success mt-3"
                     v-on:click="sendCityIdToCreateJson"
-                >Получить ссылку на файл json
+                >Get json
                 </button>
                 <div 
                     v-if="jsonLink.length > 0"
                     class="mt-3"
                 >
-                    <a :href="jsonLink" target="_blank">Открыть</a>
+                    <a :href="jsonLink" target="_blank">open</a>
                 </div>
             </div>
         </div>
