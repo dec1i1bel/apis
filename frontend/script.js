@@ -5,6 +5,7 @@ let selectCities = new Vue({
         cities: [],
         cityWeather: [],
         cityId: 0,
+        jsonLink: ''
     },
     mounted: function() {
         this.getCities();
@@ -76,7 +77,7 @@ let selectCities = new Vue({
                 last_updated: current.updated_at,
             }];
 
-            this.sendCityIdToCreateJson();
+            // this.sendCityIdToCreateJson();
         },
         sendCityIdToCreateJson: function() {
             const url = 'http://b-apis/api/city/' + this.cityId + '/json';
@@ -87,7 +88,9 @@ let selectCities = new Vue({
                     return response.json();
                 })
                 .then((data) => {
-                    console.log(data);
+                    const link = 'http://b-apis' + data.link;
+                    console.log(link);
+                    this.jsonLink = link;
                 })
                 .catch((err) => {
                     console.error(err);
