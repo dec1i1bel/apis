@@ -93,4 +93,4 @@ let selectCities = new Vue({
                 })
         }
     }
-})
+});

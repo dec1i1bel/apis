@@ -70,7 +70,17 @@ class ApiWikidataCitiesController extends Controller
     private function getDataForJson()
     {
         return CityCurrentWeather::where('wikidata_city_id', '=', $this->cityId)
-                                ->get()
-                                ->toJson(JSON_UNESCAPED_UNICODE);
+                                ->select(
+                                    'icon_file',
+                                    'temp_c',
+                                    'humidity_p',
+                                    'is_day',
+                                    'wind_dir',
+                                    'wind_kph',
+                                    'cloud_p',
+                                    'created_at',
+                                    'updated_at'
+                                )
+                                ->first();
     }
 }
