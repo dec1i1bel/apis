@@ -14,11 +14,14 @@ class Helpers
         $dbCities = [];
 
         $databaseCities = DB::table('wikidata_cities')
-                        ->select('id', 'city_name_en')
+                        ->select('id', 'wikidata_id', 'city_name_en')
                         ->get();
 
         foreach ($databaseCities as $city) {
-            $dbCities[$city->id] = $city->city_name_en;
+            $dbCities[$city->id] = [
+                'wikidata_id' => $city->wikidata_id,
+                'name_en' => $city->city_name_en,
+            ];
         }
 
         return $dbCities;

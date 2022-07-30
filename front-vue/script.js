@@ -1,18 +1,20 @@
 let selectCities = new Vue({
     el: '#select_cities',
     data: {
-        urlReceive: 'http://b-apis/api',
+        urlLar: 'http://back-lar-apis',
+        urlReceiveLar: '',
         cities: [],
         cityWeather: [],
         cityId: 0,
         jsonLink: ''
     },
     mounted: function() {
+        this.urlReceiveLar = this.urlLar + '/api';
         this.getCities();
     },
     methods: {
         getCities: function() {
-            const url = this.urlReceive + '/cities';
+            const url = this.urlReceiveLar + '/cities';
 
             fetch(url).then((response) => {
                     return response.json()
@@ -27,7 +29,7 @@ let selectCities = new Vue({
         getCityData: function(e) {
             this.cityId = e.target.attributes.city_id.value;
 
-            const url = 'http://b-apis/api/city/' + this.cityId + '/weather';
+            const url = this.urlReceiveLar + '/city/' + this.cityId + '/weather';
 
             fetch(url, {
                     method: 'GET',
@@ -78,7 +80,7 @@ let selectCities = new Vue({
             }];
         },
         sendCityIdToCreateJson: function() {
-            const url = 'http://b-apis/api/city/' + this.cityId + '/json';
+            const url = this.urlReceiveLar + '/city/' + this.cityId + '/json';
 
             fetch(url, {
                     method: 'GET',
@@ -86,7 +88,7 @@ let selectCities = new Vue({
                     return response.json();
                 })
                 .then((data) => {
-                    this.jsonLink = 'http://b-apis' + data.link;
+                    this.jsonLink = this.urlLar + data.link;
                 })
                 .catch((err) => {
                     console.error(err);

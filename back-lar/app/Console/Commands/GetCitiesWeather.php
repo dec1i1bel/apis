@@ -35,9 +35,12 @@ class GetCitiesWeather extends Command
     public function handle()
     {
         $dbCities = Helpers::getDatabaseCities();
+        foreach ($dbCities as $cityId => $city) {
+            $dbCitiesIdsNames[$cityId] = $city['name_en'];
+        }
 
-        if (!empty($dbCities)) {
-            foreach ($dbCities as $cityId => $cityName) {
+        if (isset($dbCitiesIdsNames)) {
+            foreach ($dbCitiesIdsNames as $cityId => $cityName) {
                 /**
                  * для каждого города - запрос текущей погоды к внешнему api:
                  */

@@ -16,6 +16,8 @@ class WikidataCities extends Model
     protected $fillable = [
         'wikidata_id',
         'city_name_en',
+        'latitude',
+        'longitude',
     ];
 
     /**

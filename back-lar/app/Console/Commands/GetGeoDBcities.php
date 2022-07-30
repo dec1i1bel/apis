@@ -50,45 +50,17 @@ class GetGeoDBcities extends Command
 
             if (!empty($data)) {
                 foreach ($data as $item) {
-                    $dataCities[$item->wikiDataId] = $item->name;
-                }
-
-                if (isset($dataCities)) {
-                    $dataCities = collect($dataCities)->toArray();
-    
-                    $dbCities = Helpers::getDatabaseCities();
-
-                    if (!empty($dbCities)) {
-                        /**
-                         * Сompare arrays of cities from API and DB,
-                         * and put missing cities to DB.
-                         */
-                        $diffCities = array_diff(
-                            array_keys($dataCities),
-                            array_keys($dbCities)
-                        );
-                        foreach ($diffCities as $dCityWikiId) {
-
-                            if (isset($dataCities[$dCityWikiId])) {
-                                $city = $dataCities[$dCityWikiId];
-                            } elseif (isset($dbCities[dCityWikiId])) {
-                                $city = $dataCities[$dCityWikiId];
-                            }
-                            if (isset($city)) {
-                                $citiesToWrite[$dCityWikiId] = $city;
-                            }
-                        }
-
-                        if (isset($citiesToWrite)) {
-                            foreach ($citiesToWrite as $wikiId => $cityName) {
-                                WikidataCities::create([
-                                    'wikidata_id' => $wikiId,
-                                    'city_name_en' => $cityName
-                                ]);
-                            }
-                        }
-
-                    }
+                    WikidataCities::updateOrCreate(
+                        [
+                            'wikidata_id' => $item->wikiDataId
+                        ],
+                        [
+                            'wikidata_id' => $item->wikiDataId,
+                            'city_name_en' => $item->name,
+                            'latitude' => $item->latitude,
+                            'longitude' => $item->longitude,
+                        ]
+                    );
                 }
             }
         }
