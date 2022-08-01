@@ -1,3 +1,3 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+api_city_places:
+  path: /api/{city_id}/places
+  controller: \App\Controller\ApiPlacesController

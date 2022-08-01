@@ -19,6 +19,8 @@
                     v-for="city in cities" 
                     v-bind:value="city.name"
                     v-bind:city_id="city.city_id"
+                    v-bind:latitude="city.latitude"
+                    v-bind:longitude="city.longitude"
                     v-on:click="getCityData"
                 >{{ city.name }}</option>
             </select>

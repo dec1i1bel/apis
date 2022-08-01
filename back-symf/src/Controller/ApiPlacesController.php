@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiWikidataCitiesController
+class ApiPlacesController
 {
-    public function getCitySmth()
+    public function getPlaces()
     {
         
     }
