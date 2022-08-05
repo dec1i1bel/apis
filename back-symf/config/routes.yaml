@@ -1,3 +1,7 @@
-api_city_places:
-  path: /api/{city_id}/places
-  controller: \App\Controller\ApiPlacesController
+test:
+  path: /test
+  controller: App\Controller\ApiCitiesPlacesController::test
+
+get_cities_from_3rdParty_api_and_save_to_DB:
+  path: /api/cities/places
+  controller: App\Controller\ApiCitiesPlacesController::saveCitiesPlacestoDB
