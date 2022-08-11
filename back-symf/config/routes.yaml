@@ -2,6 +2,6 @@ test:
   path: /test
   controller: App\Controller\ApiCitiesPlacesController::test
 
-get_cities_from_3rdParty_api_and_save_to_DB:
-  path: /api/cities/places
-  controller: App\Controller\ApiCitiesPlacesController::saveCitiesPlacestoDB
+getCitiesFrom3rdPartyApiAndSaveToDB:
+  path: /cities/places/savedb
+  controller: App\Controller\ApiCitiesPlacesController::saveCitiesPlacesToDB

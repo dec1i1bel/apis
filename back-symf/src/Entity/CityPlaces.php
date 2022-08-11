@@ -37,6 +37,11 @@ class CityPlaces
      */
     private $city_id;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $distance;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,6 +91,18 @@ class CityPlaces
     public function setCityId(?WikidataCities $city_id): self
     {
         $this->city_id = $city_id;
+
+        return $this;
+    }
+
+    public function getDistance(): ?float
+    {
+        return $this->distance;
+    }
+
+    public function setDistance(?float $distance): self
+    {
+        $this->distance = $distance;
 
         return $this;
     }

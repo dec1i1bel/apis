@@ -21,9 +21,9 @@ final class Version20220801041209 extends AbstractMigration
             name VARCHAR (100) NOT NULL,
             latitude FLOAT NOT NULL,
             longitude FLOAT NOT NULL,
-            city_id BIGINT UNSIGNED,
+            city_id_id BIGINT UNSIGNED,
             PRIMARY KEY (id) ,
-            FOREIGN KEY (city_id) REFERENCES wikidata_cities (id)
+            FOREIGN KEY (city_id_id) REFERENCES wikidata_cities (id)
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ENGINE=InnoDB'
         );
     }
