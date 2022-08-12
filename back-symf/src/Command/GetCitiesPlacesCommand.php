@@ -1,54 +1,49 @@
 <?php
 
-namespace App\Controller;
+namespace App\Command;
 
-use App\Entity\WikidataCities;
 use App\Entity\CityPlaces;
+use App\Entity\WikidataCities;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class ApiCitiesPlacesController extends AbstractController
+class GetCitiesPlacesCommand extends Command
 {
-    private $client;
+    protected static $defaultName = 'cities:places';
 
-    public function __construct(HttpClientInterface $client)
+    private $client;
+    private $doctrine;
+
+    public function __construct(HttpClientInterface $client, ManagerRegistry $doctrine)
     {
         $this->client = $client;
-    }
-    
-    public function test(): JsonResponse
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/ApiCitiesPlacesController.php',
-        ]);
+        $this->doctrine = $doctrine;
+
+        parent::__construct();
     }
 
-    /**
-     * @param ManagerRegistry $doctrine
-     * @return Response
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
-     */
-    public function saveCitiesPlacesToDB(ManagerRegistry $doctrine): Response
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $client = $this->client;
+        $doctrine = $this->doctrine;
+
         try {
             $dbCities = $doctrine->getRepository(WikidataCities::class)->findAll();
             $dbPlaces = $doctrine->getRepository(CityPlaces::class)->findAll();
-            
+
             if (!$dbCities || !$dbPlaces) {
-                throw new \Exception('error recieving cities or places from database');
+                throw new \Exception('error receiving cities or places from database');
             }
         } catch (\Exception $e) {
-            return  $this->json([
-                'error' => $e->getMessage()
+            $output->writeln([
+                'error: '.$e->getMessage(),
+                'statusCode: '.$e->getCode(),
             ]);
+
+            return Command::FAILURE;
         }
 
         $entityManager = $doctrine->getManager();
@@ -70,23 +65,30 @@ class ApiCitiesPlacesController extends AbstractController
                     ],
                     'body' => '{"query":"{ getPlaces(lat:'.$lat.',lng:'.$lng.',maxDistMeters:200000) { name,lat,lng,abstract,distance } }"}',
                 ];
-    
-                $response = $this->client->request($method, $url, $options);
+
+                $response = $client->request($method, $url, $options);
                 $statusCode = $response->getStatusCode();
 
                 if ($statusCode != 200) {
                     throw new \Exception('error in request city places from 3rd-party api. Code: '.$statusCode);
                 }
 
+                $output->writeln([
+                    'got city <'.$cityName.'> places from external api'
+                ]);
+
                 $content = $response->toArray();
                 $places = $content['data']['getPlaces'];
 
             } catch (\Exception $e) {
-                return $this->json([
-                    'error' => $e->getMessage()
+                $output->writeln([
+                    'error: '.$e->getMessage(),
+                    'statusCode: '.$e->getCode(),
                 ]);
+                return Command::FAILURE;
             }
-            
+
+
             foreach ($places as $place) {
                 $isDublicate = false;
 
@@ -106,12 +108,13 @@ class ApiCitiesPlacesController extends AbstractController
 
                     $entityManager->persist($cp);
                     $entityManager->flush();
+
+                    $output->writeln([
+                        'place <'.$place['name'].'> saved',
+                    ]);
                 }
             }
         }
-
-        return $this->json([
-            'saveCitiesPlacestoDB' => 'done'
-        ]);
+        return Command::SUCCESS;
     }
 }
