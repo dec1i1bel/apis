@@ -83,12 +83,12 @@ class CityPlaces
         return $this;
     }
 
-    public function getCityId(): ?WikidataCities
+    public function getCity(): ?WikidataCities
     {
         return $this->city_id;
     }
 
-    public function setCityId(?WikidataCities $city_id): self
+    public function setCity(?WikidataCities $city_id): self
     {
         $this->city_id = $city_id;
 

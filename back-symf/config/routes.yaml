@@ -1,0 +1,3 @@
+apiCityPlaces:
+  path: '/api/city/{cityId}/places'
+  controller: App\Controller\ApiCityPlacesController::getCityPlaces
