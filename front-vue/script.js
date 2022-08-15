@@ -100,13 +100,14 @@ let selectCities = new Vue({
             }];
         },
         parsePlaces: function(places) {
-            places.forEach(place => {
-                this.cityPlaces.push({
-                    name: place.place_name_en,
-                    latitude: place.latitude,
-                    longitude: place.longitude,
-                    description: place.description
-                });
+            places[this.cityId].forEach(place => {
+                placeData = new Map();
+                placeData.set('id', place.id);
+                placeData.set('name', place.name);
+                placeData.set('latitude', place.latitude);
+                placeData.set('longitude', place.longitude);
+
+                this.cityPlaces.push(placeData);
             })
         },
         sendCityIdToCreateJson: function() {

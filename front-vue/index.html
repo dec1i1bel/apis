@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div class="container w-50 mt-4">
+    <div class="container mt-4">
         <div id="select_cities">
             <select class="form-select">
                 <option selected>Choose city</option>
@@ -24,8 +24,11 @@
                     v-on:click="getCityData"
                 >{{ city.name }}</option>
             </select>
-            <div v-if="cityWeather.length > 0">
-                <div v-for="prop in cityWeather">
+            <div class="row">
+                <div
+                    v-if="cityWeather.length > 0"
+                    v-for="prop in cityWeather"
+                    class="col-6 col-md-12">
                     <div class="card mt-3">
                         <div class="row g-0">
                             <div class="col-md-4 position-relative">
@@ -52,8 +55,28 @@
                         </div>
                     </div>
                 </div>
+                <div
+                    v-if="cityPlaces.length > 0"
+                    class="col-6 col-md-12 mt-3"
+                >
+                    <p
+                        v-for="place in cityPlaces"
+                    >
+                        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            {{ place.get('name') }}
+                        </a>
+                    </p>
+
+                    <div class="collapse" id="collapseExample">
+                        <div class="card card-body">
+                            Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <button 
-                    class="btn btn-outline-success mt-3"
+                    class="btn btn-outline-success mt-3 col-1"
                     v-on:click="sendCityIdToCreateJson"
                 >Get json
                 </button>
