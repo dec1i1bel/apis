@@ -106,6 +106,8 @@ let selectCities = new Vue({
                 placeData.set('name', place.name);
                 placeData.set('latitude', place.latitude);
                 placeData.set('longitude', place.longitude);
+                placeData.set('htmlId', 'place-description-' + place.id);
+                placeData.set('htmlHref', '#place-description-' + place.id);
 
                 this.cityPlaces.push(placeData);
             })
