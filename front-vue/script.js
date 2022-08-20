@@ -100,6 +100,7 @@ let selectCities = new Vue({
             }];
         },
         parsePlaces: function(places) {
+            let placeData;
             places[this.cityId].forEach(place => {
                 placeData = new Map();
                 placeData.set('id', place.id);
@@ -107,9 +108,22 @@ let selectCities = new Vue({
                 placeData.set('latitude', place.latitude);
                 placeData.set('longitude', place.longitude);
                 placeData.set('htmlId', 'place-description-' + place.id);
+                placeData.set('htmlMapId', 'place-map-' + place.id);
                 placeData.set('htmlHref', '#place-description-' + place.id);
 
                 this.cityPlaces.push(placeData);
+
+            });
+            const cityPlaces = this.cityPlaces;
+            $('.places_details').ready(function () {
+                ymaps.ready(function () {
+                    for (const place of cityPlaces) {
+                        new ymaps.Map(place.get('htmlMapId'), {
+                            center: [place.get('latitude'), place.get('longitude')],
+                            zoom: 10
+                        });
+                    }
+                });
             })
         },
         sendCityIdToCreateJson: function() {
