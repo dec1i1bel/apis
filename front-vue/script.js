@@ -107,24 +107,43 @@ let selectCities = new Vue({
                 placeData.set('name', place.name);
                 placeData.set('latitude', place.latitude);
                 placeData.set('longitude', place.longitude);
-                placeData.set('htmlId', 'place-description-' + place.id);
+                placeData.set('htmlId', 'place-details-' + place.id);
                 placeData.set('htmlMapId', 'place-map-' + place.id);
-                placeData.set('htmlHref', '#place-description-' + place.id);
+                placeData.set('htmlHref', '#place-details-' + place.id);
 
                 this.cityPlaces.push(placeData);
-
             });
+            this.getMaps();
+        },
+        getMaps: function () {
             const cityPlaces = this.cityPlaces;
-            $('.places_details').ready(function () {
+            $('#places_details').ready(function () {
                 ymaps.ready(function () {
                     for (const place of cityPlaces) {
-                        new ymaps.Map(place.get('htmlMapId'), {
-                            center: [place.get('latitude'), place.get('longitude')],
+                        const lat = place.get('latitude'),
+                              lng = place.get('longitude');
+                        const placeGeoObj = new ymaps.GeoObject({
+                            geometry: {
+                                type: "Point",
+                                coordinates: [lat, lng]
+                            }
+                        });
+                        let placeMap = new ymaps.Map(place.get('htmlMapId'), {
+                            center: [lat, lng],
                             zoom: 10
                         });
+                        placeMap.geoObjects.add(placeGeoObj)
                     }
                 });
-            })
+            });
+
+            $('#places-buttons').ready(function () {
+                $('#places-buttons .js-place-button').click(function (e) {
+                    const placeId = $(this).attr('aria-controls');
+                    $('#places-details .js-map-collapse').removeClass('show');
+                    $('#' + placeId).addClass('show');
+                });
+            });
         },
         sendCityIdToCreateJson: function() {
             const url = this.urlReceiveLar + '/city/' + this.cityId + '/json';
