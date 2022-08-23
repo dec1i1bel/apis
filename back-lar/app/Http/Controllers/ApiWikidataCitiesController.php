@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\WikidataCities;
 use App\Models\CityCurrentWeather;
+use App\Models\CityPlaces;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -50,12 +51,12 @@ class ApiWikidataCitiesController extends Controller
     {
         $this->cityId = $cityId;
 
-        $data = $this->getDataForJson();
+        $data = json_encode($this->getDataForJson());
 
         $now = new \DateTime();
         $now->format('Y-m-d H:i:s');
         $jsuffix = $now->getTimestamp();
-        
+
         $file = 'json/result_'.$jsuffix.'.json';
 
         $fp = fopen('../public/storage/'.$file, 'a');
@@ -69,18 +70,45 @@ class ApiWikidataCitiesController extends Controller
 
     private function getDataForJson()
     {
-        return CityCurrentWeather::where('wikidata_city_id', '=', $this->cityId)
-                                ->select(
-                                    'icon_file',
-                                    'temp_c',
-                                    'humidity_p',
-                                    'is_day',
-                                    'wind_dir',
-                                    'wind_kph',
-                                    'cloud_p',
-                                    'created_at',
-                                    'updated_at'
-                                )
-                                ->first();
+        $data = [];
+        $cityCurrentWeather = CityCurrentWeather::where('wikidata_city_id', '=', $this->cityId)
+            ->select(
+                'icon_file',
+                'temp_c',
+                'humidity_p',
+                'is_day',
+                'wind_dir',
+                'wind_kph',
+                'cloud_p',
+                'created_at',
+                'updated_at'
+            )
+            ->first();
+
+        $dbCityPlaces = CityPlaces::where('city_id_id', '=', $this->cityId)
+            ->select(
+                'name',
+                'latitude',
+                'longitude',
+                'distance',
+            )
+            ->get();
+
+        $cityPlaces = [];
+        foreach ($dbCityPlaces as $place) {
+            $cityPlaces[$place->name] = [
+                'latitude' => $place->latitude,
+                'longitude' => $place->longitude,
+                'distance' => $place->distance,
+            ];
+        }
+
+        $data['city'] = [
+            'id' => $this->cityId,
+            'current_weather' => $cityCurrentWeather,
+            'places' => $cityPlaces,
+        ];
+
+        return $data;
     }
 }
