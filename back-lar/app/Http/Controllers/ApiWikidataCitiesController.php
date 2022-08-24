@@ -71,6 +71,11 @@ class ApiWikidataCitiesController extends Controller
     private function getDataForJson()
     {
         $data = [];
+        $cityMain = WikidataCities::where('id', '=', $this->cityId)
+            ->select(
+                'city_name_en'
+            )
+            ->first();
         $cityCurrentWeather = CityCurrentWeather::where('wikidata_city_id', '=', $this->cityId)
             ->select(
                 'icon_file',
@@ -104,7 +109,7 @@ class ApiWikidataCitiesController extends Controller
         }
 
         $data['city'] = [
-            'id' => $this->cityId,
+            'main' => $cityMain,
             'current_weather' => $cityCurrentWeather,
             'places' => $cityPlaces,
         ];
