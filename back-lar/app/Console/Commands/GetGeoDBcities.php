@@ -39,7 +39,7 @@ class GetGeoDBcities extends Command
      */
     public function handle()
     {
-        $api = new ExternalAPIManager('https://wft-geo-db.p.rapidapi.com/v1/geo/cities?minPopulation=10000000');
+        $api = new ExternalAPIManager('https://wft-geo-db.p.rapidapi.com/v1/geo/cities?minPopulation=2000000&maxPopulatin=10000000');
 
         $get = $api->getData();
 

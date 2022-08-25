@@ -103,7 +103,7 @@ class GetCitiesPlacesCommand extends Command
                     $cp->setName($place['name']);
                     $cp->setLatitude($place['lat']);
                     $cp->setLongitude($place['lng']);
-                    $cp->setCityId($city);
+                    $cp->setCity($city);
                     $cp->setDistance($place['distance']);
 
                     $entityManager->persist($cp);
