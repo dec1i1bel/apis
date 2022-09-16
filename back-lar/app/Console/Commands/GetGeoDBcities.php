@@ -22,7 +22,7 @@ class GetGeoDBcities extends Command
      *
      * @var string
      */
-    protected $description = 'Get basic information (name, coordinates, etc.) about cities in the world with population more than 1000000 people from GeoDB Cities API';
+    protected $description = 'Get basic information (name, coordinates, etc.) about cities from GeoDB Cities API';
 
     /**
      * Create a new command instance.
