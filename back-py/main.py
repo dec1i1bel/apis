@@ -1,9 +1,10 @@
 import requests as req
 from bs4 import BeautifulSoup
 
-url = "https://yandex.ru/images/search?from=tabbar&text=great%20wall%20of%20china"
+url_api = 'http://apis-back-symf/api/city/1/places'
+url_web = 'https://yandex.ru/images/search?from=tabbar&text=great%20wall%20of%20china'
 
-with(req.get(url)) as response:
+with(req.get(url_web)) as response:
 
     if response.status_code == 200:
 
@@ -16,3 +17,4 @@ with(req.get(url)) as response:
 
     else:
         print("couldn't receive images")
+        
