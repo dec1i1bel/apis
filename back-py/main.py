@@ -1,20 +1,33 @@
+from fastapi import FastAPI
+from bs4 import BeautifulSoup as bs
 import requests as req
-from bs4 import BeautifulSoup
+import json
 
-url_api = 'http://apis-back-symf/api/city/1/places'
-url_web = 'https://yandex.ru/images/search?from=tabbar&text=great%20wall%20of%20china'
+app = FastAPI()
 
-with(req.get(url_web)) as response:
 
-    if response.status_code == 200:
+@app.get('/api//photos')
+def getPhotos(place_name):
 
-        html = response.text
-        soup = BeautifulSoup(html, 'lxml')
-        imgs = soup.find_all('img', class_='serp-item__thumb')
+    url_web = 'https://yandex.ru/images/search?from=tabbar&text=' + place_name
 
-        for img in imgs:
-            print("{0}: {1}: {2}".format(img.name, img['class'], img['src']))
+    with(req.get(url_web)) as resp:
 
-    else:
-        print("couldn't receive images")
-        
+        imgs = []
+
+        if resp.status_code == 200:
+
+            html = resp.text
+            soup = bs(html, 'lxml')
+            imgsHtml = soup.find_all('img', class_='serp-item__thumb')
+
+            for img in imgsHtml:
+                src = 'https:' + img['src']
+                imgs.append(src)
+                # print("{0}: {1}: {2}".format(img.name, img['class'], img['src']))
+
+        else:
+            imgs.append('error')
+
+        imgs = json.dumps(imgs)
+        return imgs
