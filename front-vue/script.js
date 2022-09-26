@@ -1,14 +1,15 @@
 let selectCities = new Vue({
     el: '#select_cities',
     data: {
-        urlLar: 'http://back-lar-apis',
-        urlSymf: 'http://back-symf-apis',
+        urlLar: 'http://apis-back-lar',
+        urlSymf: 'http://apis-back-symf',
         urlReceiveLar: '',
         urlReceiveSymf: '',
         cities: [],
         cityWeather: [],
         cityPlaces: [],
         cityId: 0,
+        placesPhotos: [],
         jsonLink: ''
     },
     mounted: function() {
@@ -100,7 +101,8 @@ let selectCities = new Vue({
             }];
         },
         parsePlaces: function(places) {
-            let placeData;
+            var placeData, placePhotos;
+
             places[this.cityId].forEach(place => {
                 placeData = new Map();
                 placeData.set('id', place.id);
@@ -113,9 +115,9 @@ let selectCities = new Vue({
 
                 this.cityPlaces.push(placeData);
             });
-            this.getMaps();
+            this.getPlacesMaps();
         },
-        getMaps: function () {
+        getPlacesMaps: function () {
             const cityPlaces = this.cityPlaces;
             $('#places_details').ready(function () {
                 ymaps.ready(function () {
