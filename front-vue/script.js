@@ -9,21 +9,21 @@ let selectCities = new Vue({
         cityWeather: [],
         cityPlaces: [],
         cityId: 0,
-        placesPhotos: [],
+        placesPhotos: new Map(),
         jsonLink: ''
     },
-    mounted: function() {
+    mounted: function () {
         this.urlReceiveLar = this.urlLar + '/api';
         this.urlReceiveSymf = this.urlSymf + '/api';
         this.getCities();
     },
     methods: {
-        getCities: function() {
+        getCities: function () {
             const url = this.urlReceiveLar + '/cities';
 
             fetch(url).then((response) => {
-                    return response.json()
-                })
+                return response.json()
+            })
                 .then((data) => {
                     this.parseCities(data)
                 })
@@ -31,7 +31,7 @@ let selectCities = new Vue({
                     console.log(error)
                 })
         },
-        parseCities: function(cities) {
+        parseCities: function (cities) {
             cities.forEach(city => {
                 this.cities.push({
                     name: city.city_name_en,
@@ -41,16 +41,16 @@ let selectCities = new Vue({
                 })
             });
         },
-        getCityData: function(e) {
+        getCityData: function (e) {
             this.cityId = e.target.attributes.city_id.value;
 
             const urlWeather = this.urlReceiveLar + '/city/' + this.cityId + '/weather';
 
             fetch(urlWeather, {
-                    method: 'GET',
-                }).then((response) => {
-                    return response.json()
-                })
+                method: 'GET',
+            }).then((response) => {
+                return response.json()
+            })
                 .then((data) => {
                     this.parseWeather(data)
                 })
@@ -65,28 +65,28 @@ let selectCities = new Vue({
             }).then((response) => {
                 return response.json()
             })
-            .then((data) => {
-                this.parsePlaces(data)
-            })
-            .catch((err) => {
-                console.error(err)
-            })
+                .then((data) => {
+                    this.parsePlaces(data)
+                })
+                .catch((err) => {
+                    console.error(err)
+                })
         },
-        parseWeather: function(weather) {
+        parseWeather: function (weather) {
             const current = weather;
 
             let period = new Map();
-                period.set(0, 'night');
-                period.set(1, 'day');
+            period.set(0, 'night');
+            period.set(1, 'day');
 
             let windDir = new Map();
-                windDir.set('S', 'south');
-                windDir.set('SW', 'south-west');
-                windDir.set('SE', 'south-east');
-                windDir.set('ESE', 'east-south-east');
-                windDir.set('N', 'north');
-                windDir.set('NW', 'north-west');
-                windDir.set('NE', 'north-east');
+            windDir.set('S', 'south');
+            windDir.set('SW', 'south-west');
+            windDir.set('SE', 'south-east');
+            windDir.set('ESE', 'east-south-east');
+            windDir.set('N', 'north');
+            windDir.set('NW', 'north-west');
+            windDir.set('NE', 'north-east');
 
             this.cityWeather = [{
                 city: current.city_name_en,
@@ -100,7 +100,7 @@ let selectCities = new Vue({
                 last_updated: current.updated_at,
             }];
         },
-        parsePlaces: function(places) {
+        parsePlaces: function (places) {
             var placeData, placePhotos;
 
             places[this.cityId].forEach(place => {
@@ -115,15 +115,58 @@ let selectCities = new Vue({
 
                 this.cityPlaces.push(placeData);
             });
+            console.log('this.cityPlaces');
+            console.log(this.cityPlaces);
+            this.getPlacesPhotos();
             this.getPlacesMaps();
         },
+        getPlacesPhotos: function () {
+            const places = this.cityPlaces,
+                urlReceiveLar = this.urlReceiveLar;
+
+            let placesPhotos = this.placesPhotos,
+                thisPhotos = [];
+
+            $('#places_details').ready(function () {
+                for (const place of places) {
+
+                    // toDo: если для place не пришли фото - по нему отправлять повторный запрос
+                    // toDo: почитать о Reactivity в Vue https://v2.vuejs.org/v2/guide/reactivity.html (по ошибке при рендере фоток)
+
+                    const placeId = place.get('id');
+                    const url = urlReceiveLar + '/place/' + placeId + '/photos';
+
+                    fetch(url, {
+                        method: 'GET',
+                        }).then(response => {
+                            return response.json()
+                        })
+                        .then(photos => {
+                            thisPhotos = [];
+                            photos.forEach(function (el) {
+                                thisPhotos.push(el)
+                            });
+                            placesPhotos.set(placeId, thisPhotos);
+                        })
+                        .catch(err => {
+                            console.error(err)
+                        })
+                }
+                this.placesPhotos = placesPhotos;
+                console.log('this.placesPhotos');
+                console.log(this.placesPhotos);
+                console.log('this.cityPlaces');
+                console.log(this.cityPlaces);
+            });
+        },
         getPlacesMaps: function () {
-            const cityPlaces = this.cityPlaces;
+            const places = this.cityPlaces;
+
             $('#places_details').ready(function () {
                 ymaps.ready(function () {
-                    for (const place of cityPlaces) {
+                    for (const place of places) {
                         const lat = place.get('latitude'),
-                              lng = place.get('longitude');
+                            lng = place.get('longitude');
                         const placeGeoObj = new ymaps.GeoObject({
                             geometry: {
                                 type: "Point",
@@ -147,14 +190,14 @@ let selectCities = new Vue({
                 });
             });
         },
-        sendCityIdToCreateJson: function() {
+        sendCityIdToCreateJson: function () {
             const url = this.urlReceiveLar + '/city/' + this.cityId + '/json';
 
             fetch(url, {
-                    method: 'GET',
-                }).then((response) => {
-                    return response.json();
-                })
+                method: 'GET',
+            }).then((response) => {
+                return response.json();
+            })
                 .then((data) => {
                     this.jsonLink = this.urlLar + data.link;
                 })
