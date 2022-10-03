@@ -9,7 +9,7 @@ let selectCities = new Vue({
         cityWeather: [],
         cityPlaces: [],
         cityId: 0,
-        placesPhotos: new Map(),
+        placesPhotos: [],
         jsonLink: ''
     },
     mounted: function () {
@@ -101,7 +101,7 @@ let selectCities = new Vue({
             }];
         },
         parsePlaces: function (places) {
-            var placeData, placePhotos;
+            var placeData;
 
             places[this.cityId].forEach(place => {
                 placeData = new Map();
@@ -125,16 +125,15 @@ let selectCities = new Vue({
                 urlReceiveLar = this.urlReceiveLar;
 
             let placesPhotos = this.placesPhotos,
-                thisPhotos = [];
+                thisPhotos = [],
+                placePhotosMap;
 
             $('#places_details').ready(function () {
                 for (const place of places) {
 
-                    // toDo: если для place не пришли фото - по нему отправлять повторный запрос
-                    // toDo: почитать о Reactivity в Vue https://v2.vuejs.org/v2/guide/reactivity.html (по ошибке при рендере фоток)
-
-                    const placeId = place.get('id');
-                    const url = urlReceiveLar + '/place/' + placeId + '/photos';
+                    const placeId = place.get('id'),
+                          placeName = place.get('name'),
+                          url = urlReceiveLar + '/place/' + placeName + '/photos';
 
                     fetch(url, {
                         method: 'GET',
@@ -143,20 +142,26 @@ let selectCities = new Vue({
                         })
                         .then(photos => {
                             thisPhotos = [];
+                            placePhotosMap = new Map();
+
                             photos.forEach(function (el) {
                                 thisPhotos.push(el)
                             });
-                            placesPhotos.set(placeId, thisPhotos);
+
+                            placePhotosMap.set('place_id', placeId);
+                            placePhotosMap.set('place_photos', thisPhotos);
+                            placesPhotos.push(placePhotosMap);
                         })
                         .catch(err => {
                             console.error(err)
                         })
+
                 }
+                console.log('placesPhotos');
+                console.log(placesPhotos);
                 this.placesPhotos = placesPhotos;
                 console.log('this.placesPhotos');
                 console.log(this.placesPhotos);
-                console.log('this.cityPlaces');
-                console.log(this.cityPlaces);
             });
         },
         getPlacesMaps: function () {
