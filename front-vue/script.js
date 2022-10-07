@@ -157,8 +157,6 @@ let selectCities = new Vue({
                         })
 
                 }
-                console.log('placesPhotos');
-                console.log(placesPhotos);
                 this.placesPhotos = placesPhotos;
                 console.log('this.placesPhotos');
                 console.log(this.placesPhotos);
