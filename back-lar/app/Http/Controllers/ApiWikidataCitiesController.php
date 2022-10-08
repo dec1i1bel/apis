@@ -6,7 +6,6 @@ use App\Models\WikidataCities;
 use App\Models\CityCurrentWeather;
 use App\Models\CityPlaces;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class ApiWikidataCitiesController extends Controller
 {
@@ -24,7 +23,6 @@ class ApiWikidataCitiesController extends Controller
     public function getCityWeather(int $cityId)
     {
         $this->cityId = $cityId;
-        $city = WikidataCities::find($this->cityId)->city_name_en;
         $cityWeather = DB::table('city_current_weather')
                 ->join('wikidata_cities', function($join) {
                     $join->on('city_current_weather.wikidata_city_id', '=', 'wikidata_cities.id')
